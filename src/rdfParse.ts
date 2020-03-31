@@ -29,7 +29,7 @@ const jsonLdParseTermToTerm = (t: JsonLdParseTerm): Term => {
 };
 
 export const fromJsonLD = async (doc: object): Promise<Graph> => {
-  const nquads: JsonLDToRDFResult = <JsonLDToRDFResult>await jsonld.toRDF(doc);
+  const nquads: JsonLDToRDFResult = (await jsonld.toRDF(doc)) as JsonLDToRDFResult;
 
   const g = new Graph();
   for (const quad of nquads) {
@@ -42,6 +42,7 @@ export const fromJsonLD = async (doc: object): Promise<Graph> => {
   return g;
 };
 
+// eslint-disable-next-line  @typescript-eslint/camelcase
 const n3TermToTriple = (t: N3.Quad_Subject | N3.Quad_Predicate | N3.Quad_Object): Term => {
   switch (t.termType) {
     case "NamedNode":

@@ -10,3 +10,5 @@ const start = async () => {
   );
   console.log(evalPP("http://ex.com/a", ":x/:y", { "": "http://ex.com/" }));
 };
+
+start();
