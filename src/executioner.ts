@@ -23,7 +23,7 @@ const usePrefix = (str: string, prefix: Prefixes): string =>
   );
 
 type InputType = "jsonld" | "turtle";
-const getGraph = (doc: any, type: InputType): Promise<Graph> => {
+export const getGraph = (doc: any, type: InputType): Promise<Graph> => {
   switch (type) {
     case "jsonld":
       return fromJsonLD(doc);
@@ -41,7 +41,7 @@ export const SPPEvaluator = async (doc: any, inputType: InputType) => {
     results(graph, parseSPP(spp, prefix), usePrefix(base, prefix));
 };
 
-const start = async () => {
+/* const start = async () => {
   const evalPP = await SPPEvaluator(
     `
     prefix p: <http://ex.com/>
@@ -78,6 +78,6 @@ const start = async () => {
 
   console.log(evalPP("http://ex.com/a", ":x", { "": "http://ex.com/" }));
   //console.log(evalPP2("http://ex.com/a", ":x", { "": "http://ex.com/" }));
-};
+}; */
 
 //start();

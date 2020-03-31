@@ -5,9 +5,9 @@ import * as spp from "../../src";
 const read = (filename: string, extension: string) =>
   fs.readFileSync(path.resolve(__dirname, "data", `${filename}.${extension}`), "utf-8");
 
-const getTestResult = (caseNr) => {
+const getTestResult = (caseNr: string) => {
   const result = read(caseNr, "srx");
-  const matches = result.matchAll(/\<uri\>(.*)\<\/uri\>/g);
+  const matches = result.matchAll(/<uri>(.*)<\/uri>/g);
   const uris = [];
   for (const match of matches) {
     uris.push(match[1]);

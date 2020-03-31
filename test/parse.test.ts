@@ -6,8 +6,8 @@ describe("parsing", () => {
       `
       prefix p: <http://ex.com/>
       p:a p:x p:b .
-      p:b p:y p:c .
-      p:c p:z p:d .`,
+      p:a p:str "hi" .
+      p:b p:y [ p:z p:d ] .`,
       "turtle",
     );
 
@@ -25,6 +25,7 @@ describe("parsing", () => {
         "@graph": [
           {
             "@id": "p:a",
+            "p:str": "hi",
             "p:x": {
               "p:y": {
                 "p:z": { "@id": "p:d" },

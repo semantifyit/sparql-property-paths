@@ -39,18 +39,14 @@ const toPathObj = (parseResult: ParseResult): PathObj => {
   }
   switch (parseResult.pathType) {
     case "|":
-      return new PathAlt(
-        parseResult.items.map((i) => (itemIsNamedNode(i) ? new NamedNode(i.value) : toPathObj(i))),
-      );
+      return new PathAlt(parseResult.items.map(toPathObj));
     case "/":
-      return new PathSeq(
-        parseResult.items.map((i) => (itemIsNamedNode(i) ? new NamedNode(i.value) : toPathObj(i))),
-      );
+      return new PathSeq(parseResult.items.map(toPathObj));
     default:
       console.log(parseResult);
       throw new Error("PathType not implemented");
   }
 };
 
-export const parseSPP = (str: string, prefix: Prefixes): PathObj =>
+export const parseSPP = (str: string, prefix: Prefixes = {}): PathObj =>
   toPathObj(toParseResult(str, prefix));
