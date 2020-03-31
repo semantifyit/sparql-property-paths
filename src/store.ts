@@ -1,18 +1,15 @@
-import { TriplePattern } from "./graph";
-import { Path } from "./paths";
+import { Triple, TriplePattern, TermPattern, Term } from "./term";
+import { areSameClass } from "./utils";
 
-type Entity = string;
-export type Triple = [Entity, Entity, Entity];
-
-function matchSingle(p1: Entity | Path, p2: Entity) {
-  return p1 === undefined || p2 === undefined || p1 === p2;
+function matchSingle(p1: TermPattern, p2: Term) {
+  return p1 === undefined || (areSameClass(p1, p2) && p1.value === p2.value);
 }
 
 function matchTriple([s1, p1, o1]: TriplePattern, [s2, p2, o2]: Triple) {
   return matchSingle(s1, s2) && matchSingle(p1, p2) && matchSingle(o1, o2);
 }
 
-export default class Store {
+export class Store {
   _triples: Triple[] = [];
 
   add(t: Triple) {

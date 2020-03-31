@@ -1,18 +1,21 @@
-import { Graph, TriplePattern } from "./graph";
+import { Graph } from "./graph";
+import { TriplePattern, TermPattern, TriplePatternWithPath, NamedNode } from "./term";
 
-type EvalPathResult = [string, string];
+type PathOrNamedNode = Path | NamedNode;
+
+export type EvalPathResult = [TermPattern, TermPattern];
 
 export abstract class Path {
-  abstract eval(g: Graph, sub, obj): Generator<EvalPathResult>;
+  abstract eval(g: Graph, subj: TermPattern, obj: TermPattern): Generator<EvalPathResult>;
 }
 
 export class PathAlt extends Path implements Path {
-  args;
-  constructor(args) {
+  args: PathOrNamedNode[];
+  constructor(args: PathOrNamedNode[]) {
     super();
     this.args = args;
   }
-  *eval(graph, subj, obj) {
+  *eval(graph: Graph, subj: TermPattern, obj: TermPattern) {
     for (const x of this.args) {
       for (const y of evalPath(graph, [subj, x, obj])) {
         yield y;
@@ -22,13 +25,17 @@ export class PathAlt extends Path implements Path {
 }
 
 export class PathSeq extends Path {
-  args;
-  constructor(args) {
+  args: PathOrNamedNode[];
+  constructor(args: PathOrNamedNode[]) {
     super();
     this.args = args;
   }
-  *eval(graph, subj, obj) {
-    function* eval_seq(paths, subj, obj) {
+  *eval(graph: Graph, subj: TermPattern, obj: TermPattern) {
+    function* eval_seq(
+      paths: PathOrNamedNode[],
+      subj: TermPattern,
+      obj: TermPattern,
+    ): Generator<EvalPathResult> {
       if (paths.length > 1) {
         for (const [s, o] of evalPath(graph, [subj, paths[0], undefined])) {
           for (const r of eval_seq(paths.slice(1), o, obj)) {
@@ -52,10 +59,7 @@ export class PathSeq extends Path {
   }
 }
 
-export function* evalPath(
-  graph: Graph,
-  t: TriplePattern
-): Generator<EvalPathResult> {
+export function* evalPath(graph: Graph, t: TriplePatternWithPath): Generator<EvalPathResult> {
   for (const [s, p, o] of graph.triples(t)) {
     yield [s, o];
   }

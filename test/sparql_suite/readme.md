@@ -4,6 +4,7 @@ from https://www.w3.org/2009/sparql/docs/tests/summary.html#property-path-pp01
 
 Since this project isn't a sparql engine, only the relevant property-path test cases have been chosen.
 
+```
 pp01
 pp02
 pp03
@@ -15,7 +16,7 @@ pp10
 pp11
 pp12
 -pp14 no var base
-pp16
+-pp16 no var base
 pp21
 pp23
 pp25
@@ -28,3 +29,4 @@ pp33
 -pp35 no graph support
 pp36
 pp37
+```

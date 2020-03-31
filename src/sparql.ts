@@ -1,8 +1,11 @@
 import { Parser as SparqlParser } from "sparqljs";
 import { PathAlt, PathSeq, Path } from "./paths";
 import { Prefixes } from "./graph";
+import { NamedNode } from "./term";
 
-interface NamedNode {
+type ParseResult = ParseResultNamedNode | ParseResultPath;
+
+interface ParseResultNamedNode {
   termType: "NamedNode";
   value: string;
 }
@@ -10,44 +13,38 @@ interface NamedNode {
 interface ParseResultPath {
   type: "path";
   pathType: "|" | "/";
-  items: (NamedNode | ParseResultPath)[];
+  items: (ParseResultNamedNode | ParseResultPath)[];
 }
 
-type PathResult = NamedNode | ParseResultPath;
+export type PathObj = Path | NamedNode;
 
-export type PathObj = Path | string;
-
-const toParseResult = (sppStr: string, prefixes: Prefixes): PathResult => {
+const toParseResult = (sppStr: string, prefixes: Prefixes): ParseResult => {
   const parser = new SparqlParser();
   const prefixStr = Object.entries(prefixes)
     .map(([prefix, uri]) => `PREFIX ${prefix}: <${uri}>`)
     .join("\n");
   const parsedQuery = parser.parse(
     `${prefixStr}
-        SELECT * { ?s ${sppStr} ?o. }`
+        SELECT * { ?s ${sppStr} ?o. }`,
   );
   return parsedQuery.where[0].triples[0].predicate;
 };
 
-const itemIsNamedNode = (item: PathResult): item is NamedNode =>
+const itemIsNamedNode = (item: ParseResult): item is ParseResultNamedNode =>
   "termType" in item && item.termType === "NamedNode";
 
-const toPathObj = (parseResult: PathResult): PathObj => {
+const toPathObj = (parseResult: ParseResult): PathObj => {
   if (itemIsNamedNode(parseResult)) {
-    return parseResult.value;
+    return new NamedNode(parseResult.value);
   }
   switch (parseResult.pathType) {
     case "|":
       return new PathAlt(
-        parseResult.items.map(i =>
-          itemIsNamedNode(i) ? i.value : toPathObj(i)
-        )
+        parseResult.items.map((i) => (itemIsNamedNode(i) ? new NamedNode(i.value) : toPathObj(i))),
       );
     case "/":
       return new PathSeq(
-        parseResult.items.map(i =>
-          itemIsNamedNode(i) ? i.value : toPathObj(i)
-        )
+        parseResult.items.map((i) => (itemIsNamedNode(i) ? new NamedNode(i.value) : toPathObj(i))),
       );
     default:
       console.log(parseResult);

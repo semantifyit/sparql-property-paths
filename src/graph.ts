@@ -1,11 +1,6 @@
-import Store, { Triple } from "./store";
+import { Store } from "./store";
 import { Path } from "./paths";
-
-export type TriplePattern = [
-  string | undefined,
-  string | Path,
-  string | undefined
-];
+import { Triple, TriplePatternWithPath } from "./term";
 
 export class Graph {
   store = new Store();
@@ -14,7 +9,7 @@ export class Graph {
     this.store.add(t);
   }
 
-  *triples(t: TriplePattern): Generator<TriplePattern> {
+  *triples(t: TriplePatternWithPath): Generator<TriplePatternWithPath> {
     // console.log({ t });
     const [s, p, o] = t;
     if (p instanceof Path) {
