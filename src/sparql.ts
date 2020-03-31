@@ -17,13 +17,11 @@ type PathResult = NamedNode | ParseResultPath;
 
 export type PathObj = Path | string;
 
-const toParseResult = (sppStr: string, prefixes?: Prefixes): PathResult => {
+const toParseResult = (sppStr: string, prefixes: Prefixes): PathResult => {
   const parser = new SparqlParser();
-  const prefixStr = prefixes
-    ? Object.entries(prefixes)
-        .map(([prefix, uri]) => `PREFIX ${prefix}: <${uri}>`)
-        .join("\n")
-    : "";
+  const prefixStr = Object.entries(prefixes)
+    .map(([prefix, uri]) => `PREFIX ${prefix}: <${uri}>`)
+    .join("\n");
   const parsedQuery = parser.parse(
     `${prefixStr}
         SELECT * { ?s ${sppStr} ?o. }`
@@ -57,5 +55,5 @@ const toPathObj = (parseResult: PathResult): PathObj => {
   }
 };
 
-export const parseSPP = (str: string, prefix?: Prefixes): PathObj =>
+export const parseSPP = (str: string, prefix: Prefixes): PathObj =>
   toPathObj(toParseResult(str, prefix));
