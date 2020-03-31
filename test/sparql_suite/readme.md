@@ -10,7 +10,7 @@ pp02
 pp03
 -pp06 no mult graph support
 -pp07 no graph support
-pp08
+-pp08 only first var
 pp09
 pp10
 pp11

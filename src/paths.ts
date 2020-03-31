@@ -1,5 +1,6 @@
 import { Graph } from "./graph";
 import { TermPattern, TriplePatternWithPath, NamedNode } from "./term";
+import * as u from "./utils";
 
 type PathOrNamedNode = Path | NamedNode;
 
@@ -9,12 +10,29 @@ export abstract class Path {
   abstract eval(g: Graph, subj: TermPattern, obj: TermPattern): Generator<EvalPathResult>;
 }
 
-export class PathAlt extends Path implements Path {
+export class PathInv extends Path {
+  arg: PathOrNamedNode;
+
+  constructor(arg: PathOrNamedNode) {
+    super();
+    this.arg = arg;
+  }
+
+  *eval(graph: Graph, subj: TermPattern, obj: TermPattern): Generator<EvalPathResult> {
+    for (const [s, o] of evalPath(graph, [obj, this.arg, subj])) {
+      yield [o, s];
+    }
+  }
+}
+
+export class PathAlt extends Path {
   args: PathOrNamedNode[];
+
   constructor(args: PathOrNamedNode[]) {
     super();
     this.args = args;
   }
+
   *eval(graph: Graph, subj: TermPattern, obj: TermPattern) {
     for (const x of this.args) {
       for (const y of evalPath(graph, [subj, x, obj])) {
@@ -26,10 +44,12 @@ export class PathAlt extends Path implements Path {
 
 export class PathSeq extends Path {
   args: PathOrNamedNode[];
+
   constructor(args: PathOrNamedNode[]) {
     super();
     this.args = args;
   }
+
   *eval(graph: Graph, subj: TermPattern, obj: TermPattern) {
     function* evalSeq(
       paths: PathOrNamedNode[],
@@ -38,21 +58,34 @@ export class PathSeq extends Path {
     ): Generator<EvalPathResult> {
       if (paths.length > 1) {
         for (const [s, o] of evalPath(graph, [subj, paths[0], undefined])) {
-          for (const r of evalSeq(paths.slice(1), o, obj)) {
-            yield [s, r[1]];
+          for (const [, r] of evalSeq(u.allButFist(paths), o, obj)) {
+            yield [s, r];
           }
         }
       } else {
-        for (const [s, o] of evalPath(graph, [subj, paths[0], obj])) {
-          yield [s, o];
-        }
+        yield* evalPath(graph, [subj, paths[0], obj]);
       }
     }
 
-    if (subj) {
-      yield* evalSeq(this.args, subj, obj);
-    } else if (obj) {
-      throw new Error("no obj seq");
+    // backwards
+    function* evalSeqBw(
+      paths: PathOrNamedNode[],
+      subj: TermPattern,
+      obj: TermPattern,
+    ): Generator<EvalPathResult> {
+      if (paths.length > 1) {
+        for (const [s, o] of evalPath(graph, [undefined, u.last(paths), obj])) {
+          for (const [r] of evalSeqBw(u.allButLast(paths), subj, s)) {
+            yield [r, o];
+          }
+        }
+      } else {
+        yield* evalPath(graph, [subj, paths[0], obj]);
+      }
+    }
+
+    if (obj) {
+      yield* evalSeqBw(this.args, subj, obj);
     } else {
       yield* evalSeq(this.args, subj, obj);
     }

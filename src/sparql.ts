@@ -1,5 +1,5 @@
 import { Parser as SparqlParser } from "sparqljs";
-import { PathAlt, PathSeq, Path } from "./paths";
+import { PathAlt, PathSeq, Path, PathInv } from "./paths";
 import { Prefixes } from "./graph";
 import { NamedNode } from "./term";
 
@@ -12,7 +12,7 @@ interface ParseResultNamedNode {
 
 interface ParseResultPath {
   type: "path";
-  pathType: "|" | "/";
+  pathType: "^" | "/" | "|";
   items: (ParseResultNamedNode | ParseResultPath)[];
 }
 
@@ -38,10 +38,12 @@ const toPathObj = (parseResult: ParseResult): PathObj => {
     return new NamedNode(parseResult.value);
   }
   switch (parseResult.pathType) {
-    case "|":
-      return new PathAlt(parseResult.items.map(toPathObj));
+    case "^":
+      return new PathInv(parseResult.items.map(toPathObj)[0]);
     case "/":
       return new PathSeq(parseResult.items.map(toPathObj));
+    case "|":
+      return new PathAlt(parseResult.items.map(toPathObj));
     default:
       console.log(parseResult);
       throw new Error("PathType not implemented");
