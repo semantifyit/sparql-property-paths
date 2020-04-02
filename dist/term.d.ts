@@ -5,6 +5,7 @@ export declare type TriplePattern = [TermPattern, TermPattern, TermPattern];
 export declare type TriplePatternWithPath = [TermPattern, TermPattern | Path, TermPattern];
 export declare abstract class Term {
     constructor(value: string);
+    eq(t: Term): boolean;
     value: string;
 }
 export declare class NamedNode extends Term {

@@ -10,6 +10,9 @@ export abstract class Term {
   constructor(value: string) {
     this.value = value;
   }
+  eq(t: Term): boolean {
+    return this.value === t.value;
+  }
   value: string;
 }
 

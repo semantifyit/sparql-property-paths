@@ -1,6 +1,7 @@
 import { Store } from "./store";
 import { Path } from "./paths";
-import { Triple, TriplePatternWithPath } from "./term";
+import { Triple, TriplePatternWithPath, TriplePattern } from "./term";
+import { isEmptyIterable } from "./utils";
 
 export class Graph {
   store = new Store();
@@ -9,7 +10,9 @@ export class Graph {
     this.store.add(t);
   }
 
-  *triples(t: TriplePatternWithPath): Generator<TriplePatternWithPath> {
+  triples(t: TriplePattern): Generator<Triple>;
+  triples(t: TriplePatternWithPath): Generator<TriplePatternWithPath>;
+  *triples(t: TriplePattern | TriplePatternWithPath) {
     // console.log({ t });
     const [s, p, o] = t;
     if (p instanceof Path) {
@@ -21,6 +24,10 @@ export class Graph {
         yield [_s, _p, _o];
       }
     }
+  }
+
+  includes(t: TriplePattern): boolean {
+    return !isEmptyIterable(this.triples(t));
   }
 }
 

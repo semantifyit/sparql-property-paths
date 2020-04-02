@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "run": "ts-node --files src",
     "build": "tsc",
     "test": "jest --testMatch \"**/test/*.ts\"",
     "test-suite": "jest test/sparql_suite/runSuite.test.ts"

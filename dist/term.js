@@ -4,6 +4,9 @@ class Term {
     constructor(value) {
         this.value = value;
     }
+    eq(t) {
+        return this.value === t.value;
+    }
 }
 exports.Term = Term;
 class NamedNode extends Term {

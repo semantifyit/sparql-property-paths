@@ -41,43 +41,32 @@ export const SPPEvaluator = async (doc: any, inputType: InputType) => {
     results(graph, parseSPP(spp, prefix), usePrefix(base, prefix));
 };
 
-/* const start = async () => {
-  const evalPP = await SPPEvaluator(
-    `
-    prefix p: <http://ex.com/>
-    p:a p:x p:b .
-    p:a p:str "va"@de .
-    p:a p:num "12"^^<http://www.w3.org/2001/XMLSchema#integer> .
-    p:a p:b [p:s "sd"].
-    p:b p:y p:c .
-    p:c p:z p:d .
-    p:c p:z p:a .`,
-    "turtle",
-  );
+// const start = async () => {
+//   const evalPP = await SPPEvaluator(
+//     // `
+//     // prefix p: <http://ex.com/>
+//     // p:a p:x p:b .
+//     // p:b p:y p:c .
+//     // p:c p:z p:d .
+//     // p:c p:z p:a .`,
+//     `@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+//     @prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+//     @prefix ex:	<http://www.example.org/schema#>.
+//     @prefix in:	<http://www.example.org/instance#>.
 
-  const evalPP2 = await SPPEvaluator(
-    {
-      "@context": {
-        p: "http://ex.com/",
-      },
-      "@graph": [
-        {
-          "@id": "p:a",
-          "p:str": { "@value": "valalva", "@language": "de" },
-          "p:num": { "@value": "12", "@type": "http://www.w3.org/2001/XMLSchema#integer" },
-          "p:x": {
-            "p:y": {
-              "p:z": { "@id": "p:d" },
-            },
-          },
-        },
-      ],
-    },
-    "jsonld",
-  );
+//     in:a ex:p1 in:b .
+//     in:a ex:p2 in:c .
+//     in:a ex:p3 in:d .`,
+//     "turtle",
+//   );
 
-  console.log(evalPP("http://ex.com/a", ":x", { "": "http://ex.com/" }));
-  //console.log(evalPP2("http://ex.com/a", ":x", { "": "http://ex.com/" }));
-}; */
+//   console.log(
+//     evalPP("http://www.example.org/instance#a", "!(ex:p1|ex:p2)", {
+//       ex: "http://www.example.org/schema#",
+//       in: "http://www.example.org/instance#",
+//     }),
+//   );
+//   // console.log(evalPP("http://ex.com/a", "!(:y|:z)", { "": "http://ex.com/" }));
+// };
 
-//start();
+// start();

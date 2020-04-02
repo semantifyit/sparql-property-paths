@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const store_1 = require("./store");
 const paths_1 = require("./paths");
+const utils_1 = require("./utils");
 class Graph {
     constructor() {
         this.store = new store_1.Store();
@@ -22,6 +23,9 @@ class Graph {
                 yield [_s, _p, _o];
             }
         }
+    }
+    includes(t) {
+        return !utils_1.isEmptyIterable(this.triples(t));
     }
 }
 exports.Graph = Graph;
