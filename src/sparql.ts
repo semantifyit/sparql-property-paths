@@ -1,5 +1,5 @@
 import { Parser as SparqlParser } from "sparqljs";
-import { PathAlt, PathSeq, Path, PathInv, PathNeg } from "./paths";
+import { PathAlt, PathSeq, Path, PathInv, PathNeg, PathMult } from "./paths";
 import { Prefixes } from "./graph";
 import { NamedNode } from "./term";
 
@@ -12,7 +12,7 @@ interface ParseResultNamedNode {
 
 interface ParseResultPath {
   type: "path";
-  pathType: "^" | "/" | "|" | "!";
+  pathType: "^" | "/" | "|" | "*" | "+" | "?" | "!";
   items: (ParseResultNamedNode | ParseResultPath)[];
 }
 
@@ -44,6 +44,10 @@ const toPathObj = (parseResult: ParseResult): PathObj => {
       return new PathSeq(parseResult.items.map(toPathObj));
     case "|":
       return new PathAlt(parseResult.items.map(toPathObj));
+    case "*":
+    case "+":
+    case "?":
+      return new PathMult(parseResult.items.map(toPathObj)[0], parseResult.pathType);
     case "!":
       return new PathNeg(parseResult.items.map(toPathObj)[0]);
     default:

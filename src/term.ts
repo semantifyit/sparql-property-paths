@@ -1,4 +1,6 @@
 import { Path } from "./paths";
+import { areSameClass } from "./utils";
+import { CustomSet } from "./CustomSet";
 
 export type Triple = [NamedNode | BlankNode, NamedNode, NamedNode | BlankNode | Literal];
 
@@ -11,7 +13,10 @@ export abstract class Term {
     this.value = value;
   }
   eq(t: Term): boolean {
-    return this.value === t.value;
+    return areSameClass(this, t) && this.value === t.value;
+  }
+  id() {
+    return this.constructor.name + "_" + this.value;
   }
   value: string;
 }
@@ -25,5 +30,11 @@ export class Literal extends Term {
     super(value);
     this.datatype = datatype;
     this.language = language;
+  }
+}
+
+export class TermPatternSet extends CustomSet<TermPattern> {
+  stringifyItem(t: TermPattern) {
+    return t ? t.id() : "";
   }
 }

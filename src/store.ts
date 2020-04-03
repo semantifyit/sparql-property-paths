@@ -9,6 +9,7 @@ function matchTriple([s1, p1, o1]: TriplePattern, [s2, p2, o2]: Triple) {
   return matchSingle(s1, s2) && matchSingle(p1, p2) && matchSingle(o1, o2);
 }
 
+// TODO needs to be made more performant, e.g with maps
 export class Store {
   _triples: Triple[] = [];
 

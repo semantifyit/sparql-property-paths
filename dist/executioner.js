@@ -30,27 +30,13 @@ exports.SPPEvaluator = async (doc, inputType) => {
 };
 // const start = async () => {
 //   const evalPP = await SPPEvaluator(
-//     // `
-//     // prefix p: <http://ex.com/>
-//     // p:a p:x p:b .
-//     // p:b p:y p:c .
-//     // p:c p:z p:d .
-//     // p:c p:z p:a .`,
-//     `@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-//     @prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
-//     @prefix ex:	<http://www.example.org/schema#>.
-//     @prefix in:	<http://www.example.org/instance#>.
-//     in:a ex:p1 in:b .
-//     in:a ex:p2 in:c .
-//     in:a ex:p3 in:d .`,
+//     `
+//     @prefix : <http://example.org/> .
+//  :A0 :P :A1, :A2 .
+//  :A1 :P :A0, :A2 .
+//  :A2 :P :A0, :A1 .`,
 //     "turtle",
 //   );
-//   console.log(
-//     evalPP("http://www.example.org/instance#a", "!(ex:p1|ex:p2)", {
-//       ex: "http://www.example.org/schema#",
-//       in: "http://www.example.org/instance#",
-//     }),
-//   );
-//   // console.log(evalPP("http://ex.com/a", "!(:y|:z)", { "": "http://ex.com/" }));
+//   console.log(evalPP("http://example.org/A0", "((:P)*)*", { "": "http://example.org/" }));
 // };
 // start();

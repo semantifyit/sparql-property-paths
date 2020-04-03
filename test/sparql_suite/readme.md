@@ -27,6 +27,6 @@ pp32
 pp33
 -pp34 no graph support
 -pp35 no graph support
-pp36
+-pp36 no result variable
 pp37
 ```

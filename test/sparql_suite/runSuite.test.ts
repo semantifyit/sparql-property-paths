@@ -28,6 +28,10 @@ const prefixes3 = {
   "": "http://www.example.org/",
 };
 
+const prefixes4 = {
+  "": "http://example.org/",
+};
+
 const testCase = async (
   inFile: string,
   outFile: string,
@@ -42,7 +46,7 @@ const testCase = async (
 describe("SPARQL PP Test Suite", () => {
   it("pp01", async () => await testCase("pp01", "pp01", "in:a", "ex:p1/ex:p2/ex:p3", prefixes1));
 
-  it("pp02", async () => await testCase("pp01", "pp01", "in:a", "(ex:p1/ex:p2/ex:p3)*", prefixes1));
+  it("pp02", async () => await testCase("pp01", "pp02", "in:a", "(ex:p1/ex:p2/ex:p3)*", prefixes1));
 
   it("pp03", async () =>
     await testCase("pp03", "pp03", "in:a", "ex:p1/ex:p2/ex:p3/ex:p4", prefixes1));
@@ -78,7 +82,7 @@ describe("SPARQL PP Test Suite", () => {
   it("pp33", async () =>
     await testCase("path-p3", "path-p4", ":a", "(:p0|^:p1)/:p2|:p3", prefixes3));
 
-  it("pp36", async () => await testCase("clique3", "pp36", ":a0", "(:p)*", prefixes3));
+  // it("pp36", async () => await testCase("clique3", "pp36", ":a0", "(:p)*", prefixes3));
 
-  it("pp37", async () => await testCase("pp37", "pp37", ":A0", "((:P)*)*", prefixes3));
+  it("pp37", async () => await testCase("pp37", "pp37", ":A0", "((:P)*)*", prefixes4));
 });

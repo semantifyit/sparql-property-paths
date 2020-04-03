@@ -24,6 +24,10 @@ const toPathObj = (parseResult) => {
             return new paths_1.PathSeq(parseResult.items.map(toPathObj));
         case "|":
             return new paths_1.PathAlt(parseResult.items.map(toPathObj));
+        case "*":
+        case "+":
+        case "?":
+            return new paths_1.PathMult(parseResult.items.map(toPathObj)[0], parseResult.pathType);
         case "!":
             return new paths_1.PathNeg(parseResult.items.map(toPathObj)[0]);
         default:
