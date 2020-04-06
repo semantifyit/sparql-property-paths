@@ -12,31 +12,22 @@ function* seqToResult(ite) {
         }
     }
 }
-const results = (graph, path, start) => utils_1.takeAll(seqToResult(paths_1.evalPath(graph, [new term_1.NamedNode(start), path, undefined])));
+const toTerm = (str) => str.startsWith("_:") ? new term_1.BlankNode(str) : new term_1.NamedNode(str);
+const results = (graph, path, start) => utils_1.takeAll(seqToResult(paths_1.evalPath(graph, [toTerm(start), path, undefined])));
 const usePrefix = (str, prefix) => Object.entries(prefix).reduce((str, [pref, uri]) => str.replace(new RegExp(`^${pref}:`), uri), str);
-exports.getGraph = (doc, type) => {
-    switch (type) {
-        case "jsonld":
-            return rdfParse_1.fromJsonLD(doc);
-        case "turtle":
-            return rdfParse_1.fromTtl(doc);
-        default:
-            throw new Error(`Unsupported input type: ${type}`);
-    }
-};
 exports.SPPEvaluator = async (doc, inputType) => {
-    const graph = await exports.getGraph(doc, inputType);
+    const graph = await rdfParse_1.getGraph(doc, inputType);
     return (base, spp, prefix = {}) => results(graph, sparql_1.parseSPP(spp, prefix), usePrefix(base, prefix));
 };
 // const start = async () => {
-//   const evalPP = await SPPEvaluator(
-//     `
-//     @prefix : <http://example.org/> .
-//  :A0 :P :A1, :A2 .
-//  :A1 :P :A0, :A2 .
-//  :A2 :P :A0, :A1 .`,
-//     "turtle",
-//   );
-//   console.log(evalPP("http://example.org/A0", "((:P)*)*", { "": "http://example.org/" }));
+//     const evalPP = await SPPEvaluator(
+//       `
+//       @prefix : <http://example.org/> .
+//    :A0 :P :A1, :A2 .
+//    :A1 :P :A0, :A2 .
+//    :A2 :P :A0, :A1 .`,
+//       "turtle",
+//     );
+//     console.log(evalPP("http://example.org/A0", "((:P)*)*", { "": "http://example.org/" }));
 // };
 // start();

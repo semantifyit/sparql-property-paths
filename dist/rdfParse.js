@@ -45,7 +45,7 @@ const n3TermToTriple = (t) => {
         case "NamedNode":
             return new term_1.NamedNode(t.value);
         case "BlankNode":
-            return new term_1.BlankNode(t.value);
+            return new term_1.BlankNode(`_:${t.value}`);
         case "Literal":
             return new term_1.Literal(t.value, t.datatype.value, t.language);
         default:
@@ -64,4 +64,14 @@ exports.fromTtl = async (str) => {
         ]);
     }
     return g;
+};
+exports.getGraph = (doc, type) => {
+    switch (type) {
+        case "jsonld":
+            return exports.fromJsonLD(doc);
+        case "turtle":
+            return exports.fromTtl(doc);
+        default:
+            throw new Error(`Unsupported input type: ${type}`);
+    }
 };

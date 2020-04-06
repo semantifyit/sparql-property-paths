@@ -1,14 +1,20 @@
 const { SPPEvaluator } = require("../");
 
-const start = async () => {
+(async () => {
   const evalPP = await SPPEvaluator(
     `
     prefix p: <http://ex.com/>
     p:a p:x p:b .
-    p:b p:y p:c .`,
+    p:b p:y [ p:str "hello" ] .`,
     "turtle",
   );
-  console.log(evalPP("http://ex.com/a", ":x/:y", { "": "http://ex.com/" }));
-};
+  const ppathPrefixes = { p: "http://ex.com/" };
 
-start();
+  const results = evalPP("p:a", "p:x/p:y", ppathPrefixes);
+
+  console.log(results); // ["http://ex.com/c"]
+
+  const str = evalPP(results[0], "p:str", ppathPrefixes);
+
+  console.log(str); // ["hello"]
+})();

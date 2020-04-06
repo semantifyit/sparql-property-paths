@@ -1,8 +1,8 @@
 import { evalPath } from "../src/paths";
 import { takeAll } from "../src/utils";
-import { getGraph } from "../src/";
 import { parseSPP } from "../src/sparql";
 import { NamedNode } from "../src/term";
+import { getGraph } from "../src/rdfParse";
 
 describe("path", () => {
   it("subj or obj missing - simple path", async () => {
