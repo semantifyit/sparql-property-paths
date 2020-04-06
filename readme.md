@@ -7,7 +7,7 @@ Implemented with help of https://github.com/RDFLib/rdflib .
 ## Example
 
 ```javascript
-const SPPEvaluator = require("xlsxToRdfVocab");
+const SPPEvaluator = require("sparql-property-paths");
 
 (async () => {
   const evalPP = await SPPEvaluator(
@@ -37,7 +37,7 @@ Currently not on npm-registry, install with git:
 Then simply require with
 
 ```javascript
-const SPPEvaluator = require("xlsxToRdfVocab");
+const SPPEvaluator = require("sparql-property-paths");
 ```
 
 ## API (Typescript signatures)
