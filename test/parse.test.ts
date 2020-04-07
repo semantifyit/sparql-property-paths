@@ -2,7 +2,7 @@ import * as spp from "../src";
 
 describe("parsing", () => {
   it("turtle", async () => {
-    const evalPP = await spp.SPPEvaluator(
+    const [evalPP] = await spp.SPPEvaluator(
       `
       prefix p: <http://ex.com/>
       p:a p:x p:b .
@@ -17,7 +17,7 @@ describe("parsing", () => {
   });
 
   it("jsonld", async () => {
-    const evalPP = await spp.SPPEvaluator(
+    const [evalPP] = await spp.SPPEvaluator(
       {
         "@context": {
           p: "http://ex.com/",

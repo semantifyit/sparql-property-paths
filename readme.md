@@ -7,10 +7,10 @@ Implemented with help of https://github.com/RDFLib/rdflib .
 ## Example
 
 ```javascript
-const SPPEvaluator = require("sparql-property-paths");
+const { SPPEvaluator } = require("sparql-property-paths");
 
 (async () => {
-  const evalPP = await SPPEvaluator(
+  const [evalPP] = await SPPEvaluator(
     `
     prefix p: <http://ex.com/>
     p:a p:x p:b .
@@ -37,7 +37,7 @@ Currently not on npm-registry, install with git:
 Then simply require with
 
 ```javascript
-const SPPEvaluator = require("sparql-property-paths");
+const { SPPEvaluator } = require("sparql-property-paths");
 ```
 
 ## API (Typescript signatures)
@@ -47,7 +47,7 @@ const SPPEvaluator = require("sparql-property-paths");
 ```typescript
 type OutFn = (base: string, spp: string, prefix?: Record<string, string>) => string[];
 
-const SPPEvaluator = (str: string, type: "jsonld" | "ttl"): Promise<OutFn>;
+const SPPEvaluator = (str: string, type: "jsonld" | "ttl"): Promise<[OutFn, Graph]>;
 ```
 
 ## Known issues

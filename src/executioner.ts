@@ -3,7 +3,7 @@ import { getGraph, InputType } from "./rdfParse";
 import { evalPath, EvalPathResult } from "./paths";
 import { takeAll } from "./utils";
 import { Graph, Prefixes } from "./graph";
-import { NamedNode, BlankNode } from "./term";
+import { NamedNode, BlankNode, Literal } from "./term";
 
 function* seqToResult(ite: Generator<EvalPathResult>): Generator<string> {
   for (const seq of ite) {
@@ -25,12 +25,18 @@ const usePrefix = (str: string, prefix: Prefixes): string =>
     str,
   );
 
-export const SPPEvaluator = async (doc: any, inputType: InputType) => {
+type OutFn = (base: string, spp: string, prefix?: Record<string, string>) => string[];
+
+export const SPPEvaluator = async (doc: any, inputType: InputType): Promise<[OutFn, Graph]> => {
   const graph = await getGraph(doc, inputType);
 
-  return (base: string, spp: string, prefix: Prefixes = {}) =>
+  const spp = (base: string, spp: string, prefix: Prefixes = {}) =>
     results(graph, parseSPP(spp, prefix), usePrefix(base, prefix));
+
+  return [spp, graph];
 };
+
+export { evalPath, Literal, NamedNode, takeAll };
 
 // const start = async () => {
 //     const evalPP = await SPPEvaluator(

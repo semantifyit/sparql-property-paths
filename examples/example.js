@@ -1,7 +1,7 @@
 const { SPPEvaluator } = require("../");
 
 (async () => {
-  const evalPP = await SPPEvaluator(
+  const [evalPP] = await SPPEvaluator(
     `
     prefix p: <http://ex.com/>
     p:a p:x p:b .
