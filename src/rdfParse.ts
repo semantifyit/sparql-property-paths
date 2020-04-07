@@ -28,8 +28,12 @@ const jsonLdParseTermToTerm = (t: JsonLdParseTerm): Term => {
   }
 };
 
-export const fromJsonLD = async (doc: object): Promise<Graph> => {
-  const nquads: JsonLDToRDFResult = (await jsonld.toRDF(doc)) as JsonLDToRDFResult;
+export const fromJsonLD = async (doc: string | object): Promise<Graph> => {
+  let obj = doc;
+  if (typeof doc === "string") {
+    obj = JSON.parse(doc);
+  }
+  const nquads: JsonLDToRDFResult = (await jsonld.toRDF(obj)) as JsonLDToRDFResult;
 
   const g = new Graph();
   for (const quad of nquads) {

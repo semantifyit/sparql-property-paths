@@ -28,7 +28,11 @@ const jsonLdParseTermToTerm = (t) => {
     }
 };
 exports.fromJsonLD = async (doc) => {
-    const nquads = (await jsonld_1.default.toRDF(doc));
+    let obj = doc;
+    if (typeof doc === "string") {
+        obj = JSON.parse(doc);
+    }
+    const nquads = (await jsonld_1.default.toRDF(obj));
     const g = new graph_1.Graph();
     for (const quad of nquads) {
         g.add([

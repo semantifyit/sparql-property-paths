@@ -41,4 +41,30 @@ describe("parsing", () => {
       "http://ex.com/d",
     ]);
   });
+
+  it("jsonld 2", async () => {
+    const [evalPP] = await spp.SPPEvaluator(
+      JSON.stringify({
+        "@context": {
+          p: "http://ex.com/",
+        },
+        "@graph": [
+          {
+            "@id": "p:a",
+            "p:str": "hi",
+            "p:x": {
+              "p:y": {
+                "p:z": { "@id": "p:d" },
+              },
+            },
+          },
+        ],
+      }),
+      "jsonld",
+    );
+
+    expect(evalPP("http://ex.com/a", ":x/:y/:z", { "": "http://ex.com/" })).toEqual([
+      "http://ex.com/d",
+    ]);
+  });
 });
