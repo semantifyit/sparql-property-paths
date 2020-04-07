@@ -25,9 +25,9 @@ const usePrefix = (str: string, prefix: Prefixes): string =>
     str,
   );
 
-type OutFn = (base: string, spp: string, prefix?: Record<string, string>) => string[];
+export type SPPEval = (base: string, spp: string, prefix?: Record<string, string>) => string[];
 
-export const SPPEvaluator = async (doc: any, inputType: InputType): Promise<[OutFn, Graph]> => {
+export const SPPEvaluator = async (doc: any, inputType: InputType): Promise<[SPPEval, Graph]> => {
   const graph = await getGraph(doc, inputType);
 
   const spp = (base: string, spp: string, prefix: Prefixes = {}) =>
