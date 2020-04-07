@@ -3,8 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sparql_1 = require("./sparql");
 const rdfParse_1 = require("./rdfParse");
 const paths_1 = require("./paths");
+exports.evalPath = paths_1.evalPath;
 const utils_1 = require("./utils");
+exports.takeAll = utils_1.takeAll;
 const term_1 = require("./term");
+exports.NamedNode = term_1.NamedNode;
+exports.Literal = term_1.Literal;
 function* seqToResult(ite) {
     for (const seq of ite) {
         if (seq[1]) {
@@ -17,7 +21,8 @@ const results = (graph, path, start) => utils_1.takeAll(seqToResult(paths_1.eval
 const usePrefix = (str, prefix) => Object.entries(prefix).reduce((str, [pref, uri]) => str.replace(new RegExp(`^${pref}:`), uri), str);
 exports.SPPEvaluator = async (doc, inputType) => {
     const graph = await rdfParse_1.getGraph(doc, inputType);
-    return (base, spp, prefix = {}) => results(graph, sparql_1.parseSPP(spp, prefix), usePrefix(base, prefix));
+    const spp = (base, spp, prefix = {}) => results(graph, sparql_1.parseSPP(spp, prefix), usePrefix(base, prefix));
+    return [spp, graph];
 };
 // const start = async () => {
 //     const evalPP = await SPPEvaluator(
