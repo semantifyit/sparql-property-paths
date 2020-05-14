@@ -4,3 +4,5 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./executioner"));
+var rdfParse_1 = require("./rdfParse");
+exports.fromJsonLD = rdfParse_1.fromJsonLD;

@@ -19,10 +19,21 @@ export abstract class Term {
     return this.constructor.name + "_" + this.value;
   }
   value: string;
+  nt(): string {
+    return this.value;
+  }
 }
 
-export class NamedNode extends Term {}
-export class BlankNode extends Term {}
+export class NamedNode extends Term {
+  nt(): string {
+    return `<${this.value}>`;
+  }
+}
+export class BlankNode extends Term {
+  nt(): string {
+    return this.value;
+  }
+}
 export class Literal extends Term {
   datatype?: string;
   language?: string;
@@ -30,6 +41,9 @@ export class Literal extends Term {
     super(value);
     this.datatype = datatype;
     this.language = language;
+  }
+  nt(): string {
+    return `"${this.value}"`;
   }
 }
 

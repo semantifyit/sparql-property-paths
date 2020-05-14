@@ -14,3 +14,30 @@ export const isEmptyIterable = (iterable: Generator) => {
   }
   return true;
 };
+
+export const bNodeIssuer = (prefix = "b") => {
+  let counter = 0;
+  return () => `_:${prefix}${++counter}`;
+};
+
+export const getBNodeIssuer = (issuer: () => string) => {
+  const bNodeTable: Record<string, string> = {};
+
+  return (originBNodeVal: string): string => {
+    if (!bNodeTable[originBNodeVal]) {
+      bNodeTable[originBNodeVal] = issuer();
+    }
+    return bNodeTable[originBNodeVal];
+  };
+};
+
+export const clone = <T>(o: T): T => JSON.parse(JSON.stringify(o));
+
+export const withAtVocabPrefixes = (prefixes: Record<string, string>): Record<string, string> => {
+  const newPrefixes = clone(prefixes);
+  if (newPrefixes[""]) {
+    newPrefixes["@vocab"] = newPrefixes[""];
+    delete newPrefixes[""];
+  }
+  return newPrefixes;
+};

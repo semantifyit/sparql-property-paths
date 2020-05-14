@@ -12,6 +12,9 @@ class Store {
     constructor() {
         this._triples = [];
     }
+    *[Symbol.iterator]() {
+        yield* this._triples;
+    }
     add(t) {
         this._triples.push(t);
     }

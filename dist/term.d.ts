@@ -9,15 +9,19 @@ export declare abstract class Term {
     eq(t: Term): boolean;
     id(): string;
     value: string;
+    nt(): string;
 }
 export declare class NamedNode extends Term {
+    nt(): string;
 }
 export declare class BlankNode extends Term {
+    nt(): string;
 }
 export declare class Literal extends Term {
     datatype?: string;
     language?: string;
     constructor(value: string, datatype?: string, language?: string);
+    nt(): string;
 }
 export declare class TermPatternSet extends CustomSet<TermPattern> {
     stringifyItem(t: TermPattern): string;

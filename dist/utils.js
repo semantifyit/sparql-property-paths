@@ -12,3 +12,25 @@ exports.isEmptyIterable = (iterable) => {
     }
     return true;
 };
+exports.bNodeIssuer = (prefix = "b") => {
+    let counter = 0;
+    return () => `_:${prefix}${++counter}`;
+};
+exports.getBNodeIssuer = (issuer) => {
+    const bNodeTable = {};
+    return (originBNodeVal) => {
+        if (!bNodeTable[originBNodeVal]) {
+            bNodeTable[originBNodeVal] = issuer();
+        }
+        return bNodeTable[originBNodeVal];
+    };
+};
+exports.clone = (o) => JSON.parse(JSON.stringify(o));
+exports.withAtVocabPrefixes = (prefixes) => {
+    const newPrefixes = exports.clone(prefixes);
+    if (newPrefixes[""]) {
+        newPrefixes["@vocab"] = newPrefixes[""];
+        delete newPrefixes[""];
+    }
+    return newPrefixes;
+};

@@ -12,12 +12,21 @@ class Term {
     id() {
         return this.constructor.name + "_" + this.value;
     }
+    nt() {
+        return this.value;
+    }
 }
 exports.Term = Term;
 class NamedNode extends Term {
+    nt() {
+        return `<${this.value}>`;
+    }
 }
 exports.NamedNode = NamedNode;
 class BlankNode extends Term {
+    nt() {
+        return this.value;
+    }
 }
 exports.BlankNode = BlankNode;
 class Literal extends Term {
@@ -25,6 +34,9 @@ class Literal extends Term {
         super(value);
         this.datatype = datatype;
         this.language = language;
+    }
+    nt() {
+        return `"${this.value}"`;
     }
 }
 exports.Literal = Literal;

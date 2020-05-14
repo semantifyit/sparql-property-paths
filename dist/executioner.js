@@ -16,8 +16,8 @@ function* seqToResult(ite) {
         }
     }
 }
-const toTerm = (str) => str.startsWith("_:") ? new term_1.BlankNode(str) : new term_1.NamedNode(str);
-const results = (graph, path, start) => utils_1.takeAll(seqToResult(paths_1.evalPath(graph, [toTerm(start), path, undefined])));
+exports.toTerm = (str) => str.startsWith("_:") ? new term_1.BlankNode(str) : new term_1.NamedNode(str);
+const results = (graph, path, start) => utils_1.takeAll(seqToResult(paths_1.evalPath(graph, [exports.toTerm(start), path, undefined])));
 const usePrefix = (str, prefix) => Object.entries(prefix).reduce((str, [pref, uri]) => str.replace(new RegExp(`^${pref}:`), uri), str);
 exports.SPPEvaluator = async (doc, inputType) => {
     const graph = await rdfParse_1.getGraph(doc, inputType);

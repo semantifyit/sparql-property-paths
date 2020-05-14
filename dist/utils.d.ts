@@ -5,3 +5,7 @@ export declare const allButLast: <T>(arr: T[]) => T[];
 export declare const takeAll: <T>(iterator: Generator<T, any, unknown>) => T[];
 export declare const areSameClass: (o1: any, o2: any) => boolean;
 export declare const isEmptyIterable: (iterable: Generator<unknown, any, unknown>) => boolean;
+export declare const bNodeIssuer: (prefix?: string) => () => string;
+export declare const getBNodeIssuer: (issuer: () => string) => (originBNodeVal: string) => string;
+export declare const clone: <T>(o: T) => T;
+export declare const withAtVocabPrefixes: (prefixes: Record<string, string>) => Record<string, string>;

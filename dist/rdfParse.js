@@ -14,31 +14,32 @@ const jsonld_1 = __importDefault(require("jsonld"));
 const N3 = __importStar(require("n3"));
 const graph_1 = require("./graph");
 const term_1 = require("./term");
-const jsonLdParseTermToTerm = (t) => {
+const utils_1 = require("./utils");
+const jsonLdParseTermToTerm = (t, bNodeIssuer) => {
     var _a;
     switch (t.termType) {
         case "NamedNode":
             return new term_1.NamedNode(t.value);
         case "BlankNode":
-            return new term_1.BlankNode(t.value);
+            return new term_1.BlankNode(bNodeIssuer(t.value));
         case "Literal":
             return new term_1.Literal(t.value, (_a = t === null || t === void 0 ? void 0 : t.datatype) === null || _a === void 0 ? void 0 : _a.value, t.language);
         default:
             throw new Error("JSONLD unknown term type: " + t.termType);
     }
 };
-exports.fromJsonLD = async (doc) => {
+exports.fromJsonLD = async (doc, g = new graph_1.Graph()) => {
     let obj = doc;
     if (typeof doc === "string") {
         obj = JSON.parse(doc);
     }
     const nquads = (await jsonld_1.default.toRDF(obj));
-    const g = new graph_1.Graph();
+    const getBnode = utils_1.getBNodeIssuer(g.bNodeIssuer);
     for (const quad of nquads) {
         g.add([
-            jsonLdParseTermToTerm(quad.subject),
-            jsonLdParseTermToTerm(quad.predicate),
-            jsonLdParseTermToTerm(quad.object),
+            jsonLdParseTermToTerm(quad.subject, getBnode),
+            jsonLdParseTermToTerm(quad.predicate, getBnode),
+            jsonLdParseTermToTerm(quad.object, getBnode),
         ]);
     }
     return g;
@@ -56,10 +57,9 @@ const n3TermToTriple = (t) => {
             throw new Error("JSONLD unknown term type: " + t.termType);
     }
 };
-exports.fromTtl = async (str) => {
+exports.fromTtl = async (str, g = new graph_1.Graph()) => {
     const parser = new N3.Parser();
     const quads = parser.parse(str);
-    const g = new graph_1.Graph();
     for (const quad of quads) {
         g.add([
             n3TermToTriple(quad.subject),

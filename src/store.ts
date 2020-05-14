@@ -13,6 +13,10 @@ function matchTriple([s1, p1, o1]: TriplePattern, [s2, p2, o2]: Triple) {
 export class Store {
   _triples: Triple[] = [];
 
+  *[Symbol.iterator]() {
+    yield* this._triples;
+  }
+
   add(t: Triple) {
     this._triples.push(t);
   }

@@ -13,7 +13,7 @@ function* seqToResult(ite: Generator<EvalPathResult>): Generator<string> {
   }
 }
 
-const toTerm = (str: string): NamedNode | BlankNode =>
+export const toTerm = (str: string): NamedNode | BlankNode =>
   str.startsWith("_:") ? new BlankNode(str) : new NamedNode(str);
 
 const results = (graph: Graph, path: PathObj, start: string) =>
