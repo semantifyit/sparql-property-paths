@@ -8,3 +8,5 @@ var rdfParse_1 = require("./rdfParse");
 exports.fromJsonLD = rdfParse_1.fromJsonLD;
 var sparql_1 = require("./sparql");
 exports.parseSPP = sparql_1.parseSPP;
+var utils_1 = require("./utils");
+exports.isEmptyIterable = utils_1.isEmptyIterable;

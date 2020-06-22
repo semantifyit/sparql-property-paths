@@ -9,7 +9,7 @@ export declare class Graph {
     includes(t: TriplePattern): boolean;
     serialize({ format, prefixes, replaceNodes, }: {
         format: "jsonld" | "nt";
-        prefixes: Record<string, string>;
+        prefixes?: Record<string, string>;
         replaceNodes: boolean;
     }): Promise<string>;
 }

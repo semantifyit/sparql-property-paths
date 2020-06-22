@@ -43,7 +43,7 @@ export class Graph {
     replaceNodes,
   }: {
     format: "jsonld" | "nt";
-    prefixes: Record<string, string>;
+    prefixes?: Record<string, string>;
     replaceNodes: boolean;
   }): Promise<string> {
     let doc = "";

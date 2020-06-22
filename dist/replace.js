@@ -28,20 +28,24 @@ const jsonLDGraphToObj = (graph, deleteReplaced = false) => {
             }
         }
     }
-    if (deleteReplaced) {
-        // console.log(replacedIds);
-        for (const deleteId of replacedIds) {
-            delete obj[deleteId]; // only deletes the reference to the replaced object not those where the object was inserted into
-        }
-    }
-    return Object.values(obj);
+    // if (deleteReplaced) {
+    //   // console.log(replacedIds);
+    //   for (const deleteId of replacedIds) {
+    //     delete obj[deleteId]; // only deletes the reference to the replaced object not those where the object was inserted into
+    //   }
+    // }
+    return [obj, replacedIds];
 };
 exports.replace = (graph) => {
-    const connectedGraph = jsonLDGraphToObj(graph, true);
+    const graphClone = clone(graph);
+    const [connectedGraph, replacedIds] = jsonLDGraphToObj(graphClone, true);
     // test for circular deps & remove links
     try {
         const graphCopy = clone(connectedGraph);
-        return graphCopy;
+        for (const deleteId of replacedIds) {
+            delete graphCopy[deleteId]; // only deletes the reference to the replaced object not those where the object was inserted into
+        }
+        return Object.values(graphCopy);
     }
     catch (e) {
         console.error("Could not replace, circular dependencies when replacing nodes");
