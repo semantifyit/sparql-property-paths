@@ -16,12 +16,12 @@ type JsonLDToRDFResult = {
   object: JsonLdParseTerm;
 }[];
 
-const jsonLdParseTermToTerm = (t: JsonLdParseTerm, bNodeIssuer: (s: string) => string, keepBnodeIds: boolean): Term => {
+const jsonLdParseTermToTerm = (t: JsonLdParseTerm, bNodeIssuer: (s: string) => string): Term => {
   switch (t.termType) {
     case "NamedNode":
       return new NamedNode(t.value);
     case "BlankNode":
-      return new BlankNode(keepBnodeIds ? t.value : bNodeIssuer(t.value));
+      return new BlankNode(bNodeIssuer(t.value));
     case "Literal":
       return new Literal(t.value, t?.datatype?.value, t.language);
     default:
@@ -29,7 +29,7 @@ const jsonLdParseTermToTerm = (t: JsonLdParseTerm, bNodeIssuer: (s: string) => s
   }
 };
 
-export const fromJsonLD = async (doc: string | object, g: Graph = new Graph(), {keepBnodeIds} = {keepBnodeIds: false}): Promise<Graph> => {
+export const fromJsonLD = async (doc: string | object, g: Graph = new Graph()): Promise<Graph> => {
   let obj = doc;
   if (typeof doc === "string") {
     obj = JSON.parse(doc);
@@ -40,9 +40,9 @@ export const fromJsonLD = async (doc: string | object, g: Graph = new Graph(), {
 
   for (const quad of nquads) {
     g.add([
-      jsonLdParseTermToTerm(quad.subject, getBnode, keepBnodeIds),
-      jsonLdParseTermToTerm(quad.predicate, getBnode, keepBnodeIds),
-      jsonLdParseTermToTerm(quad.object, getBnode, keepBnodeIds),
+      jsonLdParseTermToTerm(quad.subject, getBnode),
+      jsonLdParseTermToTerm(quad.predicate, getBnode),
+      jsonLdParseTermToTerm(quad.object, getBnode),
     ]);
   }
   return g;
