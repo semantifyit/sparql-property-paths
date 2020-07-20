@@ -1,6 +1,6 @@
 export * from "./executioner";
 
-export { fromJsonLD } from "./rdfParse";
+export { fromJsonLD, getGraph } from "./rdfParse";
 
 export { parseSPP, PathObj } from "./sparql";
 

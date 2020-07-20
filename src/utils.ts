@@ -41,3 +41,19 @@ export const withAtVocabPrefixes = (prefixes: Record<string, string>): Record<st
   }
   return newPrefixes;
 };
+
+export function* map<T, U>(iter: Iterable<T>, fn: (t: T) => U): Generator<U>{
+  for (let x of iter) {
+    yield fn(x);
+  }
+}
+
+export function reduce<T, U> (iter: Iterable<T>, fn: (a: U, b: T) => U, initial: U): U {
+  let val: U = initial;
+
+  for (let x of iter) {
+    val = fn(val, x);
+  }
+
+  return val;
+}

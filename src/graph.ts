@@ -3,9 +3,7 @@ import jsonld from "jsonld";
 import { Store } from "./store";
 import { Path } from "./paths";
 import { Triple, TriplePatternWithPath, TriplePattern } from "./term";
-import { bNodeIssuer, isEmptyIterable, withAtVocabPrefixes } from "./utils";
-import { Util } from "n3";
-import prefix = Util.prefix;
+import { bNodeIssuer, isEmptyIterable, map, takeAll, withAtVocabPrefixes } from "./utils";
 import { replace } from "./replace";
 
 export class Graph {
@@ -20,7 +18,6 @@ export class Graph {
   triples(t: TriplePattern): Generator<Triple>;
   triples(t: TriplePatternWithPath): Generator<TriplePatternWithPath>;
   *triples(t: TriplePattern | TriplePatternWithPath) {
-    // console.log({ t });
     const [s, p, o] = t;
     if (p instanceof Path) {
       for (const [_s, _o] of p.eval(this, s, o)) {
@@ -37,38 +34,51 @@ export class Graph {
     return !isEmptyIterable(this.triples(t));
   }
 
-  async serialize({
-    format,
-    prefixes,
-    replaceNodes,
-  }: {
-    format: "jsonld" | "nt";
-    prefixes?: Record<string, string>;
-    replaceNodes: boolean;
-  }): Promise<string> {
+  _serializeToN3(): string {
     let doc = "";
     for (const [s, p, o] of this.store) {
       const line = `${s.nt()} ${p.nt()} ${o.nt()} .\n`;
       doc += line;
     }
-    if (format === "nt") {
-      return doc;
-    }
-    // console.log(doc);
-    let jsonldDoc: any = await jsonld.fromRDF(doc as any, { format: "application/n-quads" });
+    return doc;
+  }
 
-    if (replaceNodes) {
-      // console.log(JSON.stringify(jsonldDoc, null, 2));
-      // console.log("-----------------------------------");
-      jsonldDoc = replace(jsonldDoc);
-      // console.log(jsonldDoc);
-    }
+  async serialize({
+    format,
+    prefixes,
+    replaceNodes,
+  }: {
+    format: "jsonld" | "nt" | "json";
+    prefixes?: Record<string, string>;
+    replaceNodes?: boolean;
+  }): Promise<string> {
+    switch (format) {
+      case "nt":
+        const doc = this._serializeToN3();
+        return doc;
+      case "jsonld": {
+        const triples = this._serializeToN3();
+        let jsonldDoc: any = await jsonld.fromRDF(triples as any, {
+          format: "application/n-quads",
+        });
 
-    if (prefixes) {
-      jsonldDoc = await jsonld.compact(jsonldDoc, withAtVocabPrefixes(prefixes));
-    }
+        if (replaceNodes) {
+          jsonldDoc = replace(jsonldDoc);
+        }
 
-    return JSON.stringify(jsonldDoc);
+        if (prefixes) {
+          jsonldDoc = await jsonld.compact(jsonldDoc, withAtVocabPrefixes(prefixes));
+        }
+
+        return JSON.stringify(jsonldDoc);
+      }
+      case "json": {
+        const triples = map(this.store, ([s, p, o]) => [s.value, p.value, o.value]);
+        return JSON.stringify(takeAll(triples));
+      }
+      default:
+        throw new Error(`Format "${format}" not supported`);
+    }
   }
 }
 
