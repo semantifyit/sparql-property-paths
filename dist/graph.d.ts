@@ -7,10 +7,11 @@ export declare class Graph {
     triples(t: TriplePattern): Generator<Triple>;
     triples(t: TriplePatternWithPath): Generator<TriplePatternWithPath>;
     includes(t: TriplePattern): boolean;
+    _serializeToN3(): string;
     serialize({ format, prefixes, replaceNodes, }: {
-        format: "jsonld" | "nt";
+        format: "jsonld" | "nt" | "json";
         prefixes?: Record<string, string>;
-        replaceNodes: boolean;
+        replaceNodes?: boolean;
     }): Promise<string>;
 }
 export declare type Prefixes = Record<string, string>;

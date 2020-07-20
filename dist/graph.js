@@ -17,7 +17,6 @@ class Graph {
         this.store.add(t);
     }
     *triples(t) {
-        // console.log({ t });
         const [s, p, o] = t;
         if (p instanceof paths_1.Path) {
             for (const [_s, _o] of p.eval(this, s, o)) {
@@ -33,27 +32,39 @@ class Graph {
     includes(t) {
         return !utils_1.isEmptyIterable(this.triples(t));
     }
-    async serialize({ format, prefixes, replaceNodes, }) {
+    _serializeToN3() {
         let doc = "";
         for (const [s, p, o] of this.store) {
             const line = `${s.nt()} ${p.nt()} ${o.nt()} .\n`;
             doc += line;
         }
-        if (format === "nt") {
-            return doc;
+        return doc;
+    }
+    async serialize({ format, prefixes, replaceNodes, }) {
+        switch (format) {
+            case "nt":
+                const doc = this._serializeToN3();
+                return doc;
+            case "jsonld": {
+                const triples = this._serializeToN3();
+                let jsonldDoc = await jsonld_1.default.fromRDF(triples, {
+                    format: "application/n-quads",
+                });
+                if (replaceNodes) {
+                    jsonldDoc = replace_1.replace(jsonldDoc);
+                }
+                if (prefixes) {
+                    jsonldDoc = await jsonld_1.default.compact(jsonldDoc, utils_1.withAtVocabPrefixes(prefixes));
+                }
+                return JSON.stringify(jsonldDoc);
+            }
+            case "json": {
+                const triples = utils_1.map(this.store, ([s, p, o]) => [s.value, p.value, o.value]);
+                return JSON.stringify(utils_1.takeAll(triples));
+            }
+            default:
+                throw new Error(`Format "${format}" not supported`);
         }
-        // console.log(doc);
-        let jsonldDoc = await jsonld_1.default.fromRDF(doc, { format: "application/n-quads" });
-        if (replaceNodes) {
-            // console.log(JSON.stringify(jsonldDoc, null, 2));
-            // console.log("-----------------------------------");
-            jsonldDoc = replace_1.replace(jsonldDoc);
-            // console.log(jsonldDoc);
-        }
-        if (prefixes) {
-            jsonldDoc = await jsonld_1.default.compact(jsonldDoc, utils_1.withAtVocabPrefixes(prefixes));
-        }
-        return JSON.stringify(jsonldDoc);
     }
 }
 exports.Graph = Graph;

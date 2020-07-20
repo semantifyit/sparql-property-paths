@@ -34,3 +34,17 @@ exports.withAtVocabPrefixes = (prefixes) => {
     }
     return newPrefixes;
 };
+function* map(iter, fn) {
+    for (let x of iter) {
+        yield fn(x);
+    }
+}
+exports.map = map;
+function reduce(iter, fn, initial) {
+    let val = initial;
+    for (let x of iter) {
+        val = fn(val, x);
+    }
+    return val;
+}
+exports.reduce = reduce;

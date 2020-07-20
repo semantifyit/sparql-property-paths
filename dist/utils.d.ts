@@ -9,3 +9,5 @@ export declare const bNodeIssuer: (prefix?: string) => () => string;
 export declare const getBNodeIssuer: (issuer: () => string) => (originBNodeVal: string) => string;
 export declare const clone: <T>(o: T) => T;
 export declare const withAtVocabPrefixes: (prefixes: Record<string, string>) => Record<string, string>;
+export declare function map<T, U>(iter: Iterable<T>, fn: (t: T) => U): Generator<U>;
+export declare function reduce<T, U>(iter: Iterable<T>, fn: (a: U, b: T) => U, initial: U): U;
